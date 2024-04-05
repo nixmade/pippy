@@ -1,0 +1,41 @@
+name: CI
+run-name: CI - ${{inputs.pippy_run_id}}
+
+on:
+  workflow_dispatch:
+    inputs:
+      pippy_run_id:
+        type: string
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GOPRIVATE: github.com/nixmade
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.22'
+    
+    - name: Download dependencies
+      run: |
+        git config --global url.https://${{ secrets.GH_TOKEN_ACCESS }}@github.com/.insteadOf https://github.com/
+        go mod download
+
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v6
+      with:
+        version: v1.59
+
+    - name: Lint
+      run: make lint
+
+    - name: Test
+      run: make test
+
+    - name: App
+      run: make app
