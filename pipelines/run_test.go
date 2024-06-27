@@ -2,10 +2,12 @@ package pipelines
 
 import (
 	"context"
+	"fmt"
 	"maps"
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/nixmade/pippy/github"
 	"github.com/nixmade/pippy/log"
@@ -524,4 +526,58 @@ func TestOrchestrateRollback(t *testing.T) {
 	require.Equal(t, "dummy4", stageRun.inputs["version"])
 	require.Equal(t, "dummy2", stageRun.rollback.inputs["version"])
 	require.Len(t, githubClient.dispatches, 2)
+}
+
+func TestOrchestrateBadDispatchErr(t *testing.T) {
+	o := setupOrchestrator(t)
+
+	tempDir, err := os.MkdirTemp(os.TempDir(), "TestOrchestrateBad*")
+	require.NoError(t, err)
+
+	defer os.RemoveAll(tempDir)
+	store.HomeDir = tempDir
+
+	newPipeline := &Pipeline{
+		Name: "Pipeline1",
+		Stages: []Stage{
+			{Repo: "org1/repo1",
+				Workflow: expectedWorkflows["org1/repo1"][0],
+				Approval: false,
+				Input:    map[string]string{"version": ""}},
+			{Repo: "org1/repo1",
+				Workflow: github.Workflow{Name: "Workflow2", Id: 2345},
+				Approval: false,
+				Input:    map[string]string{"version": ""}},
+		},
+	}
+	o.pipeline = newPipeline
+	o.githubClient = newTestGithubClient()
+	//var runs []github.WorkflowRun
+	for i, stage := range newPipeline.Stages {
+		err = o.getCurrentState(i, stage)
+		require.NoError(t, err)
+
+		status := o.stageStatus.Get(getStageName(i, stage.Workflow.Name))
+		require.NotNil(t, status)
+		//runs = append(runs, github.WorkflowRun{Name: status.runId, Status: "completed", Conclusion: "failure"})
+	}
+
+	githubClient := &runGithubClient{dispatchErr: fmt.Errorf("simulating dispatch error"), workflowRuns: nil, afterDispatch: true}
+	o.githubClient = githubClient
+	require.NoError(t, o.setupEngine())
+	defer o.engine.ShutdownAndClose()
+
+	require.Error(t, o.tick(context.Background(), 1))
+	time.Sleep(1 * time.Second)
+	require.NoError(t, o.tick(context.Background(), 1))
+
+	require.Equal(t, FAILED, o.stageStatus.GetState())
+
+	currentRun := o.stageStatus.Get(getStageName(0, newPipeline.Stages[0].Workflow.Name))
+	require.Equal(t, currentRun.reason, "simulating dispatch error")
+
+	currentRun = o.stageStatus.Get(getStageName(1, newPipeline.Stages[1].Workflow.Name))
+	require.NotNil(t, currentRun)
+	require.Equal(t, "Workflow_Unknown", currentRun.state)
+	require.Len(t, githubClient.dispatches, 1)
 }

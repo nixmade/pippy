@@ -235,7 +235,8 @@ func RunPipeline(ctx context.Context, name, runId string, inputs map[string]stri
 
 	if err := o.orchestrate(ctx, 5000); err != nil {
 		o.logger.Error().Err(err).Msg("Failed to run async orchestrator")
-		panic(err)
+		//panic(err)
+		return err
 	}
 	o.logger.Info().Msg("orchestrator is done")
 

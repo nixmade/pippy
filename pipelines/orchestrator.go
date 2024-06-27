@@ -62,6 +62,11 @@ func (o *orchestrator) tick(ctx context.Context, interval int) error {
 					if errors.Is(err, ErrStageInProgress) {
 						break
 					}
+					stageName := getStageName(i, stage.Workflow.Name)
+					currentRun := o.stageStatus.Get(stageName)
+					currentRun.reason = err.Error()
+					currentRun.state = "Workflow_Failed"
+					o.stageStatus.Set(stageName, currentRun)
 					return err
 				}
 			}

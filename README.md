@@ -8,7 +8,7 @@
 
 ## Introduction
 
-Welcome to pippy, thank you visiting this project. Pippy allows you to create dynamic pipelines on Github Actions(a.k.a workflows). Examples,
+Welcome to pippy, thank you visiting this project. Pippy allows you to create configurable pipelines on Github Actions(a.k.a workflows). Examples,
 
 1. `CI(Tests)` **->** `Build docker image` **->** `Deploy docker image (Staging)` **->** `Approval` **->** `Deploy docker image(Production)`
 1. `Terraform plan` **->** `Approval` **->** `Terraform apply`
@@ -36,13 +36,14 @@ Welcome to pippy, thank you visiting this project. Pippy allows you to create dy
 pippy user login
 ```
 
-* Workflows used as part of pipeline needs to be pippy ready.
+* Workflows used as part of pipeline needs to be pippy ready. Use spacebar to select repo
 
 ```bash
 pippy workflow validate
 ```
 
 * After corresponding changes are made to workflows and merged to repo, verify by running above validations
+
 * Create a new pipeline by following steps
 
 ```bash
@@ -78,7 +79,7 @@ Cloud version is coming soon, please signup here at [pippy](https://pippy.dev), 
 
 ### What are the alternatives?
 
-You can easily chain your workflows in github [reusing workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows), be aware of the [limitations](https://docs.github.com/en/actions/using-workflows/reusing-workflows#limitations).
+If you do not require any features mentioned above, you can easily chain your workflows in github [reusing workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows), be aware of the [limitations](https://docs.github.com/en/actions/using-workflows/reusing-workflows#limitations).
 
 ### Where is the data stored?
 
