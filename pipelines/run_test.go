@@ -574,7 +574,7 @@ func TestOrchestrateBadDispatchErr(t *testing.T) {
 	require.Equal(t, FAILED, o.stageStatus.GetState())
 
 	currentRun := o.stageStatus.Get(getStageName(0, newPipeline.Stages[0].Workflow.Name))
-	require.Equal(t, currentRun.reason, "simulating dispatch error")
+	require.Equal(t, "simulating dispatch error", currentRun.reason)
 
 	currentRun = o.stageStatus.Get(getStageName(1, newPipeline.Stages[1].Workflow.Name))
 	require.NotNil(t, currentRun)
