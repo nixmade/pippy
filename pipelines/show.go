@@ -64,9 +64,9 @@ func showPipeline(pipeline *Pipeline) {
 		// CellStyle is the base lipgloss style used for the table rows.
 		CellStyle = re.NewStyle().Padding(0, 1).Width(14)
 		// OddRowStyle is the lipgloss style used for odd-numbered table rows.
-		OddRowStyle = CellStyle.Copy().Foreground(bright)
+		OddRowStyle = CellStyle.Foreground(bright)
 		// EvenRowStyle is the lipgloss style used for even-numbered table rows.
-		EvenRowStyle = CellStyle.Copy().Foreground(dim)
+		EvenRowStyle = CellStyle.Foreground(dim)
 		// BorderStyle is the lipgloss style used for the table border.
 		BorderStyle = lipgloss.NewStyle().Foreground(dim)
 	)
@@ -163,9 +163,9 @@ func listPipeline(pipelines []*Pipeline) error {
 		// CellStyle is the base lipgloss style used for the table rows.
 		CellStyle = re.NewStyle().Padding(0, 1).Width(14)
 		// OddRowStyle is the lipgloss style used for odd-numbered table rows.
-		OddRowStyle = CellStyle.Copy().Foreground(bright)
+		OddRowStyle = CellStyle.Foreground(bright)
 		// EvenRowStyle is the lipgloss style used for even-numbered table rows.
-		EvenRowStyle = CellStyle.Copy().Foreground(dim)
+		EvenRowStyle = CellStyle.Foreground(dim)
 		// BorderStyle is the lipgloss style used for the table border.
 		BorderStyle = lipgloss.NewStyle().Foreground(dim)
 	)

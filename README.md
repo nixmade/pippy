@@ -26,7 +26,9 @@ Welcome to pippy, thank you visiting this project. Pippy allows you to create co
 
 ## Installation
 
-* Download latest release for you platform from releases
+```bash
+brew install nixmade/tap/pippy
+```
 
 ## Quick Start
 
@@ -72,7 +74,7 @@ pippy pipeline run list --name my-first-pipeline
 
 ### Do you have cloud/hosted solution?
 
-Cloud version is coming soon, please signup here at [pippy](https://pippy.dev), this has some additional features
+Cloud/Hosted version is coming soon, please signup here at [pippy](https://pippy.dev), this has some additional features
 
 * Github triggers
 * Collaboration for teams
