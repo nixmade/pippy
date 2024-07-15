@@ -41,6 +41,7 @@ const (
 
 type StageRunApproval struct {
 	Name  string `json:"name,omitempty"`
+	Login string `json:"login,omitempty"`
 	Email string `json:"email,omitempty"`
 }
 
@@ -456,8 +457,8 @@ func loadStageRun(stageRun *StageRun) *run {
 		concurrentRunId: stageRun.ConcurrentRunId,
 	}
 	approval := stageRun.Metadata.Approval
-	if approval.Name != "" {
-		value.approvedBy = fmt.Sprintf("%s(%s)", approval.Name, approval.Email)
+	if approval.Name != "" || approval.Login != "" {
+		value.approvedBy = fmt.Sprintf("%s(%s)", approval.Name, approval.Login)
 	}
 	if stageRun.Rollback != nil {
 		value.rollback = loadStageRun(stageRun.Rollback)

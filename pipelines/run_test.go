@@ -581,3 +581,93 @@ func TestOrchestrateBadDispatchErr(t *testing.T) {
 	require.Equal(t, "Workflow_Unknown", currentRun.state)
 	require.Len(t, githubClient.dispatches, 1)
 }
+
+func TestOrchestrateConcurrentError(t *testing.T) {
+	o := setupOrchestrator(t)
+
+	tempDir, err := os.MkdirTemp(os.TempDir(), "TestOrchestrateConcurrentError*")
+	require.NoError(t, err)
+
+	defer os.RemoveAll(tempDir)
+	store.HomeDir = tempDir
+
+	newPipeline := &Pipeline{
+		Name: "Pipeline1",
+		Stages: []Stage{
+			{Repo: "org1/repo1",
+				Workflow: expectedWorkflows["org1/repo1"][0],
+				Approval: false,
+				Input:    map[string]string{"version": ""}},
+			{Repo: "org1/repo1",
+				Workflow: github.Workflow{Name: "Workflow2", Id: 2345},
+				Approval: false,
+				Input:    map[string]string{"version": ""}},
+		},
+	}
+	oldRunId := o.pipelineRunId
+	o.pipeline = newPipeline
+	o.githubClient = newTestGithubClient()
+	var runs []github.WorkflowRun
+	for i, stage := range newPipeline.Stages {
+		err = o.getCurrentState(i, stage)
+		require.NoError(t, err)
+
+		status := o.stageStatus.Get(getStageName(i, stage.Workflow.Name))
+		require.NotNil(t, status)
+		runs = append(runs, github.WorkflowRun{Name: status.runId, Status: "in_progress", Conclusion: ""})
+	}
+
+	require.NoError(t, o.setupEngine())
+	defer o.engine.ShutdownAndClose()
+
+	githubClient := &runGithubClient{dispatchErr: nil, workflowRuns: runs, afterDispatch: true}
+	o.githubClient = githubClient
+	require.ErrorIs(t, o.stageTick(context.Background(), 0, newPipeline.Stages[0]), ErrStageInProgress)
+	require.ErrorIs(t, o.stageTick(context.Background(), 0, newPipeline.Stages[0]), ErrStageInProgress)
+
+	require.Equal(t, IN_PROGRESS, o.stageStatus.GetState())
+
+	currentRun := o.stageStatus.Get(getStageName(0, newPipeline.Stages[0].Workflow.Name))
+	require.NotNil(t, currentRun)
+	require.Equal(t, "InProgress", currentRun.state)
+	require.Len(t, githubClient.dispatches, 1)
+
+	runId := uuid.NewString()
+	o.pipelineRunId = runId
+	o.targetVersion = runId
+
+	require.ErrorIs(t, o.stageTick(context.Background(), 0, newPipeline.Stages[0]), ErrReachedTerminalState)
+	currentRun = o.stageStatus.Get(getStageName(0, newPipeline.Stages[0].Workflow.Name))
+	require.NotNil(t, currentRun)
+	require.Equal(t, "ConcurrentError", currentRun.state)
+
+	o.pipelineRunId = oldRunId
+	o.targetVersion = oldRunId
+	var newRuns []github.WorkflowRun
+	for _, run := range githubClient.workflowRuns {
+		newRuns = append(newRuns, github.WorkflowRun{Name: run.Name, Status: "completed", Conclusion: "success"})
+	}
+	githubClient.workflowRuns = newRuns
+
+	require.ErrorIs(t, o.stageTick(context.Background(), 0, newPipeline.Stages[0]), ErrStageInProgress)
+	time.Sleep(1 * time.Second)
+	require.NoError(t, o.stageTick(context.Background(), 0, newPipeline.Stages[0]))
+	currentRun = o.stageStatus.Get(getStageName(0, newPipeline.Stages[0].Workflow.Name))
+	require.NotNil(t, currentRun)
+	require.Equal(t, "Success", currentRun.state)
+
+	newRunId := uuid.NewString()
+	o.pipelineRunId = newRunId
+	o.targetVersion = newRunId
+	githubClient = newTestGithubClient()
+	o.githubClient = githubClient
+
+	currentRun.state = "Workflow_Unknown"
+	o.stageStatus.Set(getStageName(0, newPipeline.Stages[0].Workflow.Name), currentRun)
+	require.ErrorIs(t, o.stageTick(context.Background(), 0, newPipeline.Stages[0]), ErrStageInProgress)
+	require.ErrorIs(t, o.stageTick(context.Background(), 0, newPipeline.Stages[0]), ErrStageInProgress)
+	currentRun = o.stageStatus.Get(getStageName(0, newPipeline.Stages[0].Workflow.Name))
+	require.NotNil(t, currentRun)
+	require.Equal(t, "InProgress", currentRun.state)
+	require.Len(t, githubClient.dispatches, 1)
+}

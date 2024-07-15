@@ -36,8 +36,8 @@ func approvePipelineRun(name, id string, pipeline *Pipeline, pipelineRun *Pipeli
 		stageRun := pipelineRun.Stages[i]
 
 		approval := stageRun.Metadata.Approval
-		if approval.Name != "" {
-			approvedBy := fmt.Sprintf("%s(%s)", approval.Name, approval.Email)
+		if approval.Name != "" || approval.Login != "" {
+			approvedBy := fmt.Sprintf("%s(%s)", approval.Name, approval.Login)
 			s += "\n" + checkMark.Render() + " " + doneStyle.Render(fmt.Sprintf("Stage %d - %s already approved by %s\n", i+1, stageRun.Name, approvedBy))
 		} else {
 			approvalsRequired = append(approvalsRequired, pendingApproval{i: i, name: stageRun.Name, state: stageRun.State})
@@ -80,7 +80,7 @@ func approvePipelineRun(name, id string, pipeline *Pipeline, pipelineRun *Pipeli
 		return err
 	}
 
-	approvedBy := fmt.Sprintf("%s(%s)", cachedStore.GithubUser.Login, cachedStore.GithubUser.Email)
+	approvedBy := fmt.Sprintf("%s(%s)", cachedStore.GithubUser.Name, cachedStore.GithubUser.Login)
 
 	resource := map[string]string{"Pipeline": pipelineRun.PipelineName, "PipelineRun": pipelineRun.Id}
 	for _, i := range approvals {
@@ -91,7 +91,7 @@ func approvePipelineRun(name, id string, pipeline *Pipeline, pipelineRun *Pipeli
 
 		fmt.Println(s)
 
-		pipelineRun.Stages[stageNum].Metadata.Approval = StageRunApproval{Name: cachedStore.GithubUser.Login, Email: cachedStore.GithubUser.Email}
+		pipelineRun.Stages[stageNum].Metadata.Approval = StageRunApproval{Name: cachedStore.GithubUser.Name, Login: cachedStore.GithubUser.Login, Email: cachedStore.GithubUser.Email}
 
 		reason := fmt.Sprintf("Stage Approved %d - %s", stageNum, stage.Name)
 		if err := audit.Save(context.Background(), AUDIT_APPROVED, resource, cachedStore.GithubUser.Login, cachedStore.GithubUser.Email, reason); err != nil {
@@ -121,13 +121,13 @@ func cancelApprovePipelineRun(name, id string, pipeline *Pipeline, pipelineRun *
 		stageRun := pipelineRun.Stages[i]
 
 		approval := stageRun.Metadata.Approval
-		if approval.Name != "" {
+		if approval.Name != "" || approval.Login != "" {
 			if strings.EqualFold(stageRun.State, "PendingApproval") || stageRun.State == "" {
 				alreadyApprovedStages = append(alreadyApprovedStages, alreadyApproved{i: i, name: stageRun.Name, state: stageRun.State})
 				continue
 			}
 
-			approvedBy := fmt.Sprintf("%s(%s)", approval.Name, approval.Email)
+			approvedBy := fmt.Sprintf("%s(%s)", approval.Name, approval.Login)
 			s += "\n" + crossMark.Render() + " " + failedStyle.Render(fmt.Sprintf("Stage %d - %s with state %s cannot be canceled, approved by %s\n", i+1, stageRun.Name, stageRun.State, approvedBy))
 		}
 	}

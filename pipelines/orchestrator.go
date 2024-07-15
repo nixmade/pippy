@@ -185,6 +185,12 @@ func (o *orchestrator) stageTick(ctx context.Context, i int, stage Stage) error 
 		o.stageStatus.Set(stageName, currentRun)
 		o.stageStatus.UpdateState(FAILED)
 		logger.Info().Str("TargetVersion", o.targetVersion).Str("RollingVersion", rolloutState.RollingVersion).Msg("concurrent rollout ongoing, wait or force version")
+		// if we get a concurrent rollout error, switch back target version to rolling version
+		// otherwise we will always end up with concurrent rollout errors
+		if err := o.engine.SetTargetVersion(APP_NAME, targetName, core.EntityTargetVersion{Version: rolloutState.RollingVersion}); err != nil {
+			o.logger.Error().Err(err).Msg("failed to set target version")
+			return err
+		}
 		return ErrReachedTerminalState
 	}
 

@@ -101,8 +101,8 @@ func showPipelineRun(name, id string, pipelineRun *PipelineRun) {
 	for _, stage := range pipelineRun.Stages {
 		var approvedBy string
 		approval := stage.Metadata.Approval
-		if approval.Name != "" {
-			approvedBy = fmt.Sprintf("%s(%s)", approval.Name, approval.Email)
+		if approval.Name != "" || approval.Login != "" {
+			approvedBy = fmt.Sprintf("%s(%s)", approval.Name, approval.Login)
 		}
 		if strings.EqualFold(stage.State, "Success") {
 			s += checkMark.PaddingRight(1).Render(stage.Title) + " " + doneStyle.Render(stage.Completed.Sub(stage.Started).String())
