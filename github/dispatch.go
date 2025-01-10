@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/google/go-github/v66/github"
+	"github.com/google/go-github/v68/github"
 )
 
 func (g *Github) CreateWorkflowDispatch(org, repo string, workflowID int64, ref string, inputs map[string]interface{}) error {
