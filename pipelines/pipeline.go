@@ -189,7 +189,7 @@ func Command() *cli.Command {
 						Name:  "list",
 						Usage: "show pipeline runs",
 						Action: func(ctx context.Context, c *cli.Command) error {
-							if err := ShowAllPipelineRuns(c.String("name"), c.Int("count")); err != nil {
+							if err := ShowAllPipelineRuns(c.String("name"), c.Int64("count")); err != nil {
 								fmt.Printf("%v\n", err)
 								return err
 							}
@@ -201,7 +201,7 @@ func Command() *cli.Command {
 								Usage:    "pipeline name",
 								Required: true,
 							},
-							&cli.IntFlag{
+							&cli.Int64Flag{
 								Name:     "count",
 								Usage:    "latest n pipeline runs, -1/0 for all",
 								Value:    10,

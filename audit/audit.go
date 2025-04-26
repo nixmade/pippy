@@ -189,14 +189,14 @@ func Command() *cli.Command {
 				Name:  "list",
 				Usage: "list",
 				Action: func(ctx context.Context, c *cli.Command) error {
-					if err := ListAuditsUI(c.Int("limit")); err != nil {
+					if err := ListAuditsUI(c.Int64("limit")); err != nil {
 						fmt.Printf("%v\n", err)
 						return err
 					}
 					return nil
 				},
 				Flags: []cli.Flag{
-					&cli.IntFlag{
+					&cli.Int64Flag{
 						Name:     "limit",
 						Usage:    "audit list limit",
 						Value:    int64(10),
