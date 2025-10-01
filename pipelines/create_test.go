@@ -118,7 +118,9 @@ func TestSavePipeline(t *testing.T) {
 	tempDir, err := os.MkdirTemp(os.TempDir(), "TestSavePipeline*")
 	require.NoError(t, err)
 
-	defer assert.NoError(t, os.RemoveAll(tempDir))
+	defer func() {
+		assert.NoError(t, os.RemoveAll(tempDir))
+	}()
 	store.HomeDir = tempDir
 
 	pipeline := &Pipeline{

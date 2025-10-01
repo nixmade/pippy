@@ -141,7 +141,9 @@ func TestSaveLoadPipelineRun(t *testing.T) {
 	tempDir, err := os.MkdirTemp(os.TempDir(), "TestLoadPipelineRun*")
 	require.NoError(t, err)
 
-	defer assert.NoError(t, os.RemoveAll(tempDir))
+	defer func() {
+		assert.NoError(t, os.RemoveAll(tempDir))
+	}()
 	store.HomeDir = tempDir
 
 	require.NoError(t, o.loadPipelineRun(context.Background()))
@@ -177,7 +179,9 @@ func TestOrchestrateGood(t *testing.T) {
 	tempDir, err := os.MkdirTemp(os.TempDir(), "TestOrchestrateGood*")
 	require.NoError(t, err)
 
-	defer assert.NoError(t, os.RemoveAll(tempDir))
+	defer func() {
+		assert.NoError(t, os.RemoveAll(tempDir))
+	}()
 	store.HomeDir = tempDir
 
 	newPipeline := &Pipeline{
@@ -219,7 +223,9 @@ func TestOrchestrateBad(t *testing.T) {
 	tempDir, err := os.MkdirTemp(os.TempDir(), "TestOrchestrateBad*")
 	require.NoError(t, err)
 
-	defer assert.NoError(t, os.RemoveAll(tempDir))
+	defer func() {
+		assert.NoError(t, os.RemoveAll(tempDir))
+	}()
 	store.HomeDir = tempDir
 
 	newPipeline := &Pipeline{
@@ -265,7 +271,9 @@ func TestOrchestrateIgnoreFailures(t *testing.T) {
 	tempDir, err := os.MkdirTemp(os.TempDir(), "TestOrchestrateBad*")
 	require.NoError(t, err)
 
-	defer assert.NoError(t, os.RemoveAll(tempDir))
+	defer func() {
+		assert.NoError(t, os.RemoveAll(tempDir))
+	}()
 	store.HomeDir = tempDir
 
 	newPipeline := &Pipeline{
@@ -315,7 +323,9 @@ func TestOrchestrateApproval(t *testing.T) {
 	tempDir, err := os.MkdirTemp(os.TempDir(), "TestOrchestrateApproval*")
 	require.NoError(t, err)
 
-	defer assert.NoError(t, os.RemoveAll(tempDir))
+	defer func() {
+		assert.NoError(t, os.RemoveAll(tempDir))
+	}()
 	store.HomeDir = tempDir
 
 	newPipeline := &Pipeline{
@@ -358,7 +368,9 @@ func TestOrchestratePaused(t *testing.T) {
 	tempDir, err := os.MkdirTemp(os.TempDir(), "TestOrchestratePaused*")
 	require.NoError(t, err)
 
-	defer assert.NoError(t, os.RemoveAll(tempDir))
+	defer func() {
+		assert.NoError(t, os.RemoveAll(tempDir))
+	}()
 	store.HomeDir = tempDir
 
 	o.githubClient = newTestGithubClient()
@@ -382,7 +394,9 @@ func TestOrchestrateApprovalMulti(t *testing.T) {
 	tempDir, err := os.MkdirTemp(os.TempDir(), "TestOrchestrateApproval*")
 	require.NoError(t, err)
 
-	defer assert.NoError(t, os.RemoveAll(tempDir))
+	defer func() {
+		assert.NoError(t, os.RemoveAll(tempDir))
+	}()
 	store.HomeDir = tempDir
 
 	newPipeline := &Pipeline{
@@ -454,7 +468,9 @@ func TestOrchestrateRollback(t *testing.T) {
 	tempDir, err := os.MkdirTemp(os.TempDir(), "TestOrchestrateRollback*")
 	require.NoError(t, err)
 
-	defer assert.NoError(t, os.RemoveAll(tempDir))
+	defer func() {
+		assert.NoError(t, os.RemoveAll(tempDir))
+	}()
 	store.HomeDir = tempDir
 
 	o.config.StoreDirectory = filepath.Join(tempDir, "orchestrator")
@@ -534,7 +550,9 @@ func TestOrchestrateBadDispatchErr(t *testing.T) {
 	tempDir, err := os.MkdirTemp(os.TempDir(), "TestOrchestrateBad*")
 	require.NoError(t, err)
 
-	defer assert.NoError(t, os.RemoveAll(tempDir))
+	defer func() {
+		assert.NoError(t, os.RemoveAll(tempDir))
+	}()
 	store.HomeDir = tempDir
 
 	newPipeline := &Pipeline{
@@ -565,7 +583,9 @@ func TestOrchestrateBadDispatchErr(t *testing.T) {
 	githubClient := &runGithubClient{dispatchErr: fmt.Errorf("simulating dispatch error"), workflowRuns: nil, afterDispatch: true}
 	o.githubClient = githubClient
 	require.NoError(t, o.setupEngine())
-	defer assert.NoError(t, o.engine.ShutdownAndClose())
+	defer func() {
+		assert.NoError(t, o.engine.ShutdownAndClose())
+	}()
 
 	require.Error(t, o.tick(context.Background(), 1))
 	time.Sleep(1 * time.Second)
@@ -588,7 +608,9 @@ func TestOrchestrateConcurrentError(t *testing.T) {
 	tempDir, err := os.MkdirTemp(os.TempDir(), "TestOrchestrateConcurrentError*")
 	require.NoError(t, err)
 
-	defer assert.NoError(t, os.RemoveAll(tempDir))
+	defer func() {
+		assert.NoError(t, os.RemoveAll(tempDir))
+	}()
 	store.HomeDir = tempDir
 
 	newPipeline := &Pipeline{
@@ -618,7 +640,9 @@ func TestOrchestrateConcurrentError(t *testing.T) {
 	}
 
 	require.NoError(t, o.setupEngine())
-	defer assert.NoError(t, o.engine.ShutdownAndClose())
+	defer func() {
+		assert.NoError(t, o.engine.ShutdownAndClose())
+	}()
 
 	githubClient := &runGithubClient{dispatchErr: nil, workflowRuns: runs, afterDispatch: true}
 	o.githubClient = githubClient
