@@ -62,7 +62,11 @@ func CacheTokens(cacheStore *UserStore) error {
 	if err != nil {
 		return err
 	}
-	defer store.Close(dbStore)
+	defer func() {
+		if closeErr := store.Close(dbStore); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	if cacheStore.GithubUser.Login == "" {
 		user, err := GithubUser(cacheStore.AccessToken)
@@ -80,7 +84,11 @@ func GetCachedTokens() (*UserStore, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer store.Close(dbStore)
+	defer func() {
+		if closeErr := store.Close(dbStore); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	cacheStore := &UserStore{}
 	if err := dbStore.LoadJSON(Settings, cacheStore); err != nil {

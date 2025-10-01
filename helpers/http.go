@@ -17,7 +17,11 @@ func HttpPost(url, post string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer respU.Body.Close()
+	defer func() {
+		if closeErr := respU.Body.Close(); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	if respU.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("get returned %d, expected success with 200, error: %s", respU.StatusCode, respU.Status)
@@ -43,7 +47,11 @@ func HttpGet(url string, headers map[string]string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer respU.Body.Close()
+	defer func() {
+		if closeErr := respU.Body.Close(); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	if respU.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("get returned %d, expected success with 200, error: %s", respU.StatusCode, respU.Status)

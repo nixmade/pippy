@@ -187,7 +187,11 @@ func GetPipelineRunsN(ctx context.Context, name string, limit int64) ([]*Pipelin
 	if err != nil {
 		return nil, err
 	}
-	defer store.Close(dbStore)
+	defer func() {
+		if closeErr := store.Close(dbStore); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	pipelineRunKeyPrefix := PipelineRunPrefix
 	if name != "" {
@@ -215,7 +219,11 @@ func GetPipelineRunCount(ctx context.Context, name string) (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
-	defer store.Close(dbStore)
+	defer func() {
+		if closeErr := store.Close(dbStore); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	pipelineRunKeyPrefix := PipelineRunPrefix
 	if name != "" {
@@ -234,7 +242,11 @@ func GetPipelineRunCountByState(ctx context.Context, name string) (map[string]in
 	if err != nil {
 		return nil, err
 	}
-	defer store.Close(dbStore)
+	defer func() {
+		if closeErr := store.Close(dbStore); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	pipelineRunKeyPrefix := PipelineRunPrefix
 	if name != "" {
@@ -258,7 +270,11 @@ func GetPipelineRun(ctx context.Context, name, id string) (*PipelineRun, error) 
 	if err != nil {
 		return nil, err
 	}
-	defer store.Close(dbStore)
+	defer func() {
+		if closeErr := store.Close(dbStore); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	pipelineRunKey := fmt.Sprintf("%s%s/%s", PipelineRunPrefix, name, id)
 	pipelineRun := &PipelineRun{}
@@ -293,7 +309,11 @@ func savePipelineRun(ctx context.Context, run *PipelineRun) error {
 	if err != nil {
 		return err
 	}
-	defer store.Close(dbStore)
+	defer func() {
+		if closeErr := store.Close(dbStore); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	pipelineRunKey := fmt.Sprintf("%s%s/%s", PipelineRunPrefix, run.PipelineName, run.Id)
 	return dbStore.SaveJSON(pipelineRunKey, run)

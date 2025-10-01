@@ -98,7 +98,11 @@ func ListPipelines(ctx context.Context) ([]*Pipeline, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer store.Close(dbStore)
+	defer func() {
+		if closeErr := store.Close(dbStore); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	var pipelines []*Pipeline
 	pipelineItr := func(key any, value any) error {
@@ -122,7 +126,11 @@ func GetPipelineCount(ctx context.Context) (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
-	defer store.Close(dbStore)
+	defer func() {
+		if closeErr := store.Close(dbStore); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	count, err := dbStore.Count(PipelinePrefix)
 	if err != nil {
@@ -137,7 +145,11 @@ func GetPipeline(ctx context.Context, name string) (*Pipeline, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer store.Close(dbStore)
+	defer func() {
+		if closeErr := store.Close(dbStore); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	pipeline := &Pipeline{}
 
@@ -153,7 +165,11 @@ func SavePipeline(ctx context.Context, pipeline *Pipeline) error {
 	if err != nil {
 		return err
 	}
-	defer store.Close(dbStore)
+	defer func() {
+		if closeErr := store.Close(dbStore); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	return dbStore.SaveJSON(PipelinePrefix+pipeline.Name, pipeline)
 }

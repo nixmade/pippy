@@ -18,10 +18,15 @@ var (
 )
 
 func (o *orchestrator) orchestrate(ctx context.Context, interval int) error {
-	if err := o.setupEngine(); err != nil {
+	var err error
+	if err = o.setupEngine(); err != nil {
 		return err
 	}
-	defer o.engine.ShutdownAndClose()
+	defer func() {
+		if closeErr := o.engine.ShutdownAndClose(); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	if err := o.tick(ctx, interval); err != nil {
 		return err
@@ -304,7 +309,8 @@ func (o *orchestrator) getStageTarget(ctx context.Context, i int, stage Stage) (
 		return &core.ClientState{Name: targetName, Version: currentRun.version, IsError: isError, Message: message}, nil
 	}
 	message := fmt.Sprintf("target state %s", currentRun.state)
-	if currentRun.state == "Workflow_Failed" {
+	switch currentRun.state {
+	case "Workflow_Failed":
 		isError = true
 		o.options = &core.RolloutOptions{
 			BatchPercent:        1,
@@ -318,7 +324,7 @@ func (o *orchestrator) getStageTarget(ctx context.Context, i int, stage Stage) (
 			logger.Error().Err(err).EmbedObject(o.options).Msg("failed to set rollout options")
 			return nil, err
 		}
-	} else if currentRun.state == "Workflow_Unknown" {
+	case "Workflow_Unknown":
 		o.options = &core.RolloutOptions{
 			BatchPercent:        1,
 			SuccessPercent:      100,
@@ -368,7 +374,7 @@ func (o *orchestrator) getStageTarget(ctx context.Context, i int, stage Stage) (
 				return nil, err
 			}
 		}
-	} else if currentRun.state == "InProgress" {
+	case "InProgress":
 		isError = true
 	}
 

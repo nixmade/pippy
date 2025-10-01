@@ -14,7 +14,11 @@ func DeletePipeline(ctx context.Context, name string) error {
 	if err != nil {
 		return err
 	}
-	defer store.Close(dbStore)
+	defer func() {
+		if closeErr := store.Close(dbStore); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	if err := dbStore.Delete(PipelinePrefix + name); err != nil {
 		if errors.Is(err, store.ErrKeyNotFound) {
@@ -36,7 +40,11 @@ func DeletePipelineRun(ctx context.Context, name, id string) error {
 	if err != nil {
 		return err
 	}
-	defer store.Close(dbStore)
+	defer func() {
+		if closeErr := store.Close(dbStore); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	pipelineRunKey := fmt.Sprintf("%s%s/%s", PipelineRunPrefix, name, id)
 	if err := dbStore.Delete(pipelineRunKey); err != nil {

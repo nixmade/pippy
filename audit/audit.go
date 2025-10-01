@@ -35,7 +35,11 @@ func Save(ctx context.Context, name string, resource map[string]string, actor, e
 	if err != nil {
 		return err
 	}
-	defer store.Close(dbStore)
+	defer func() {
+		if closeErr := store.Close(dbStore); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	key := fmt.Sprintf("%s%s/%s", AuditPrefix, name, uuid.NewString())
 
@@ -54,7 +58,11 @@ func Latest(ctx context.Context, name string, resource map[string]string) (*Audi
 	if err != nil {
 		return nil, err
 	}
-	defer store.Close(dbStore)
+	defer func() {
+		if closeErr := store.Close(dbStore); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	auditKeyPrefix := fmt.Sprintf("%s%s/", AuditPrefix, name)
 	var latestAudit Audit
@@ -88,7 +96,11 @@ func ListAuditsN(ctx context.Context, limit int64) (map[string]Audit, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer store.Close(dbStore)
+	defer func() {
+		if closeErr := store.Close(dbStore); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	audits := make(map[string]Audit)
 	auditItr := func(key any, value any) error {

@@ -121,7 +121,7 @@ func RunValidateRepoWorkflows(c github.Client, repoType string) error {
 					fmt.Println(crossMark.Render() + " " + failedStyle.Render(workflow.Name) + "(" + failedStyle.Render(workflow.Path) + descriptionStyle.Render(") failed validation, make changes in corresponding sections:\n"))
 					for i, change := range changes {
 						fmt.Println(currentStyle.Render("#" + strconv.Itoa(i+1) + "\n"))
-						fmt.Println(descriptionStyle.Render(strings.Replace(change, "\"", "", -1)))
+						fmt.Println(descriptionStyle.Render(strings.ReplaceAll(change, "\"", "")))
 					}
 				} else {
 					fmt.Println(checkMark.Render() + " " + doneStyle.Render(workflow.Name) + "(" + doneStyle.Render(workflow.Path) + ") passed validation")

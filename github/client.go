@@ -51,17 +51,17 @@ func getAccessToken(ctx context.Context) (accessToken string, err error) {
 }
 
 func (g *Github) New() (*github.Client, error) {
-	privateKeyCtx := g.Context.Value(PrivateKeyCtx)
+	privateKeyCtx := g.Value(PrivateKeyCtx)
 	if privateKeyCtx != nil {
 		privateKey, err := base64.StdEncoding.DecodeString(privateKeyCtx.(string))
 		if err != nil {
 			return nil, err
 		}
-		appIDCtx := g.Context.Value(AppIDCtx)
+		appIDCtx := g.Value(AppIDCtx)
 		if appIDCtx == nil {
 			return nil, fmt.Errorf("app id is not provided or empty")
 		}
-		installationIDCtx := g.Context.Value(InstallationIDCtx)
+		installationIDCtx := g.Value(InstallationIDCtx)
 		if installationIDCtx == nil {
 			return nil, fmt.Errorf("installation id is not provided or empty")
 		}

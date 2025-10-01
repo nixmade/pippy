@@ -338,11 +338,11 @@ func (m *MonitoringController) ExternalMonitoring(_ []*core.ClientState) error {
 			return fmt.Errorf("failed to parse monitor %s", monitor)
 		}
 
-		url := fmt.Sprintf("https://api.%s/api/v1/monitor/%d?group_states=all&with_downtimes=true", m.DatadogInfo.Site, monitorID)
+		url := fmt.Sprintf("https://api.%s/api/v1/monitor/%d?group_states=all&with_downtimes=true", m.Site, monitorID)
 		headers := map[string]string{
 			"Accept":             "application/json",
-			"DD-API-KEY":         m.DatadogInfo.ApiKey,
-			"DD-APPLICATION-KEY": m.DatadogInfo.ApplicationKey,
+			"DD-API-KEY":         m.ApiKey,
+			"DD-APPLICATION-KEY": m.ApplicationKey,
 		}
 		response, err := helpers.HttpGet(url, headers)
 		if err != nil {
