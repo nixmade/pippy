@@ -7,7 +7,7 @@ import (
 
 	"gopkg.in/yaml.v3"
 
-	"github.com/google/go-github/v71/github"
+	"github.com/google/go-github/v75/github"
 )
 
 type Workflow struct {

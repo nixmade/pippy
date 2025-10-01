@@ -8,7 +8,7 @@ require (
 	github.com/charmbracelet/bubbletea v1.3.10
 	github.com/charmbracelet/huh v0.7.0
 	github.com/charmbracelet/lipgloss v1.1.0
-	github.com/google/go-github/v71 v71.0.0
+	github.com/google/go-github/v75 v75.0.0
 	github.com/google/uuid v1.6.0
 	github.com/nixmade/orchestrator v1.0.9
 	github.com/rs/zerolog v1.34.0
@@ -41,7 +41,6 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.2 // indirect
 	github.com/google/flatbuffers v25.9.23+incompatible // indirect
-	github.com/google/go-github/v75 v75.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
