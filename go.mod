@@ -10,7 +10,7 @@ require (
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/google/go-github/v71 v71.0.0
 	github.com/google/uuid v1.6.0
-	github.com/nixmade/orchestrator v1.0.8
+	github.com/nixmade/orchestrator v1.0.9
 	github.com/rs/zerolog v1.34.0
 	github.com/stretchr/testify v1.11.1
 	github.com/urfave/cli/v3 v3.4.1
