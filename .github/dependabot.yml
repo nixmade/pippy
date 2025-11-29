@@ -1,0 +1,17 @@
+version: 2
+updates:
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"
+      - "go"
+  - package-ecosystem: "github-actions"
+    directory: "/" # Location of workflow files in .github/workflows
+    schedule:
+      interval: "weekly"
+    # Add labels specifically for actions updates if desired
+    labels:
+      - "dependencies"
+      - "actions"
