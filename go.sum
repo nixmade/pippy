@@ -120,8 +120,8 @@ github.com/muesli/cancelreader v0.2.2 h1:3I4Kt4BQjOR54NavqnDogx/MIoWBFa0StPA8ELU
 github.com/muesli/cancelreader v0.2.2/go.mod h1:3XuTXfFS2VjM+HTLZY9Ak0l6eUKfijIfMUZ4EgX0QYo=
 github.com/muesli/termenv v0.16.0 h1:S5AlUN9dENB57rsbnkPyfdGuWIlkmzJjbFf0Tf5FWUc=
 github.com/muesli/termenv v0.16.0/go.mod h1:ZRfOIKPFDYQoDFF4Olj7/QJbW60Ol/kL1pU3VfY/Cnk=
-github.com/nixmade/orchestrator v1.1.5 h1:O/HHsw4pcXKTiFmzxGXKuDpe2Da1VziFikhdypP4cnQ=
-github.com/nixmade/orchestrator v1.1.5/go.mod h1:sxGmAv5+x4Cgt1cwGpWG4dlzFB58MYC+mz/CGtagPwk=
+github.com/nixmade/orchestrator v1.1.6 h1:E7m27aJntLXENqbdIjthPhs943GFwi7aIlv+OgbPiJc=
+github.com/nixmade/orchestrator v1.1.6/go.mod h1:i20nrl3RrKs4z/BiipU7DCls0axp6pDPFhi+9f4R9rs=
 github.com/ohler55/ojg v1.28.1 h1:Xy93DelhLSZNeWv8GPKtP6qMqkUlZlAxBP/AQcC5RfY=
 github.com/ohler55/ojg v1.28.1/go.mod h1:/Y5dGWkekv9ocnUixuETqiL58f+5pAsUfg5P8e7Pa2o=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=

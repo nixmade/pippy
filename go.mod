@@ -1,6 +1,6 @@
 module github.com/nixmade/pippy
 
-go 1.25.0
+go 1.26.2
 
 require (
 	github.com/bradleyfalzon/ghinstallation/v2 v2.18.0
@@ -10,7 +10,7 @@ require (
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/google/go-github/v75 v75.0.0
 	github.com/google/uuid v1.6.0
-	github.com/nixmade/orchestrator v1.1.5
+	github.com/nixmade/orchestrator v1.1.6
 	github.com/rs/zerolog v1.35.1
 	github.com/stretchr/testify v1.11.1
 	github.com/urfave/cli/v3 v3.8.0
