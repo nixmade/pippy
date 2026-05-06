@@ -7,6 +7,10 @@ updates:
     labels:
       - "dependencies"
       - "go"
+    groups:
+      gomod-all-updates:
+        patterns:
+          - "*" 
   - package-ecosystem: "github-actions"
     directory: "/" # Location of workflow files in .github/workflows
     schedule:
@@ -15,3 +19,7 @@ updates:
     labels:
       - "dependencies"
       - "actions"
+    groups:
+      actions-all-updates:
+        patterns:
+          - "*" 
