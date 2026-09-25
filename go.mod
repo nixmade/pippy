@@ -1,6 +1,6 @@
 module github.com/nixmade/pippy
 
-go 1.26.2
+go 1.27
 
 require (
 	github.com/bradleyfalzon/ghinstallation/v2 v2.19.0
